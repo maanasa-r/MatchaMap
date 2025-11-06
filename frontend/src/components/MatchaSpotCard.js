@@ -29,7 +29,10 @@ const MatchaSpotCard = ({ spot }) => {
   };
 
   return (
-    <div className={`matcha-spot-card ${spot.is_featured ? 'featured' : ''}`}>
+    <div 
+      id={`spot-${spot.id}`}
+      className={`matcha-spot-card ${spot.is_featured ? 'featured' : ''}`}
+    >
       {spot.is_featured && (
         <div className="featured-badge">Featured</div>
       )}

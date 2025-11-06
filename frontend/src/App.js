@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
-import MatchaSpotCard from './components/MatchaSpotCard';
+import LandingPage from './components/LandingPage';
+import MapView from './components/MapView';
+import Sidebar from './components/Sidebar';
 import { matchaSpotAPI } from './services/api';
 
 function App() {
+  const [showLanding, setShowLanding] = useState(true);
   const [spots, setSpots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState({
     city: '',
@@ -14,10 +18,22 @@ function App() {
     is_featured: false,
   });
   const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
+  const [selectedSpot, setSelectedSpot] = useState(null);
+  const appRef = useRef(null);
 
   useEffect(() => {
     fetchSpots();
-  }, [filter, showFeaturedOnly]);
+    
+    // Handle scroll to hide landing page
+    const handleScroll = () => {
+      if (window.scrollY > 100 && showLanding) {
+        handleEnter();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showLanding]);
 
   const fetchSpots = async () => {
     try {
@@ -45,6 +61,34 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    fetchSpots();
+  }, [filter, showFeaturedOnly]);
+
+  const handleEnter = () => {
+    setShowLanding(false);
+    // Prevent scrolling on map page
+    document.body.classList.add('map-active');
+    document.documentElement.style.overflow = 'hidden';
+  };
+
+  const handleMarkerClick = (spot) => {
+    setSelectedSpot(spot);
+    setSidebarOpen(true);
+    // Scroll to the spot in sidebar
+    setTimeout(() => {
+      const element = document.getElementById(`spot-${spot.id}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 400);
+  };
+
+  const handleSpotClick = (spot) => {
+    setSelectedSpot(spot);
+    // You could also center the map on this spot
+  };
+
   const filteredSpots = spots.filter(spot => {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
@@ -56,134 +100,63 @@ function App() {
   });
 
   return (
-    <div className="App">
-      <header className="app-header">
-        <div className="header-content">
-          <h1 className="app-title">
-            <span className="matcha-icon">🍵</span>
-            MatchaMap
-          </h1>
-          <p className="app-subtitle">Discover the best matcha spots in Irvine</p>
+    <div className="App" ref={appRef}>
+      {showLanding && (
+        <LandingPage onEnter={handleEnter} />
+      )}
+
+      <div className={`main-content ${showLanding ? 'hidden' : ''}`}>
+        <MapView 
+          spots={filteredSpots} 
+          onMarkerClick={handleMarkerClick}
+          selectedSpot={selectedSpot}
+        />
+        
+        {/* Floating button to open sidebar */}
+        <button 
+          className="sidebar-toggle-btn"
+          onClick={() => setSidebarOpen(true)}
+          title="Open spots list"
+        >
+          <span className="toggle-icon">🍵</span>
+          <span className="toggle-text">Spots</span>
+        </button>
+
+        <Sidebar
+          spots={filteredSpots}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          onSpotClick={handleSpotClick}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          filter={filter}
+          onFilterChange={setFilter}
+          showFeaturedOnly={showFeaturedOnly}
+          onFeaturedToggle={setShowFeaturedOnly}
+          onClearFilters={() => {
+            setFilter({ city: '', price_range: '', is_featured: false });
+            setShowFeaturedOnly(false);
+            setSearchTerm('');
+          }}
+          loading={loading}
+        />
+      </div>
+
+      {loading && !showLanding && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+          <p>Loading matcha spots...</p>
         </div>
-      </header>
+      )}
 
-      <main className="app-main">
-        <div className="container">
-          <div className="search-section">
-            <div className="search-bar-container">
-              <input
-                type="text"
-                className="search-bar"
-                placeholder="Search matcha spots by name or location..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <span className="search-icon">🔍</span>
-            </div>
-
-            <div className="filters">
-              <div className="filter-group">
-                <label htmlFor="city-filter">City:</label>
-                <select
-                  id="city-filter"
-                  className="filter-select"
-                  value={filter.city}
-                  onChange={(e) => setFilter({ ...filter, city: e.target.value })}
-                >
-                  <option value="">All Cities</option>
-                  <option value="Irvine">Irvine</option>
-                  <option value="Tustin">Tustin</option>
-                  <option value="Costa Mesa">Costa Mesa</option>
-                  <option value="Newport Beach">Newport Beach</option>
-                </select>
-              </div>
-
-              <div className="filter-group">
-                <label htmlFor="price-filter">Price Range:</label>
-                <select
-                  id="price-filter"
-                  className="filter-select"
-                  value={filter.price_range}
-                  onChange={(e) => setFilter({ ...filter, price_range: e.target.value })}
-                >
-                  <option value="">All Prices</option>
-                  <option value="$">$ - Inexpensive</option>
-                  <option value="$$">$$ - Moderate</option>
-                  <option value="$$$">$$$ - Expensive</option>
-                  <option value="$$$$">$$$$ - Very Expensive</option>
-                </select>
-              </div>
-
-              <div className="filter-group">
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={showFeaturedOnly}
-                    onChange={(e) => setShowFeaturedOnly(e.target.checked)}
-                  />
-                  <span>Featured Only</span>
-                </label>
-              </div>
-
-              <button
-                className="clear-filters-btn"
-                onClick={() => {
-                  setFilter({ city: '', price_range: '', is_featured: false });
-                  setShowFeaturedOnly(false);
-                  setSearchTerm('');
-                }}
-              >
-                Clear Filters
-              </button>
-            </div>
-          </div>
-
-          {loading && (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
-              <p>Loading matcha spots...</p>
-            </div>
-          )}
-
-          {error && (
-            <div className="error-container">
-              <p>{error}</p>
-              <button onClick={fetchSpots} className="retry-btn">
-                Retry
-              </button>
-            </div>
-          )}
-
-          {!loading && !error && (
-            <>
-              <div className="results-header">
-                <h2>
-                  {filteredSpots.length === 0
-                    ? 'No matcha spots found'
-                    : `${filteredSpots.length} Matcha Spot${filteredSpots.length !== 1 ? 's' : ''} Found`}
-                </h2>
-              </div>
-
-              {filteredSpots.length === 0 ? (
-                <div className="empty-state">
-                  <span className="empty-icon">🍵</span>
-                  <p>No matcha spots match your criteria. Try adjusting your filters!</p>
-                </div>
-              ) : (
-                <div className="spots-grid">
-                  {filteredSpots.map((spot) => (
-                    <MatchaSpotCard key={spot.id} spot={spot} />
-                  ))}
-                </div>
-              )}
-            </>
-          )}
+      {error && !showLanding && (
+        <div className="error-overlay">
+          <p>{error}</p>
+          <button onClick={fetchSpots} className="retry-btn">
+            Retry
+          </button>
         </div>
-      </main>
-
-      <footer className="app-footer">
-        <p>Made with ☕ for UCI students</p>
-      </footer>
+      )}
     </div>
   );
 }
