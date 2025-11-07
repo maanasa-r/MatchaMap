@@ -1,195 +1,195 @@
 .auth-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(13, 18, 23, 0.65);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1100;
-  backdrop-filter: blur(6px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(13, 18, 23, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    backdrop-filter: blur(6px);
 }
 
 .auth-modal {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(18px);
-  border-radius: 24px;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
-  padding: 40px;
-  width: min(420px, 90vw);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(18px);
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+    padding: 40px;
+    width: min(420px, 90vw);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 
 .auth-modal-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-  font-size: 18px;
-  transition: transform 0.2s ease, background 0.2s ease;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .auth-modal-close:hover {
-  transform: rotate(90deg);
-  background: rgba(0, 0, 0, 0.1);
+    transform: rotate(90deg);
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .auth-modal-title {
-  font-size: 28px;
-  margin: 0;
-  font-weight: 800;
-  color: #2d3748;
+    font-size: 28px;
+    margin: 0;
+    font-weight: 800;
+    color: #2d3748;
 }
 
 .auth-modal-subtitle {
-  margin: 0;
-  color: #4a5568;
-  font-size: 15px;
+    margin: 0;
+    color: #4a5568;
+    font-size: 15px;
 }
 
 .auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .auth-form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .auth-form-group label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #4a5568;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5568;
 }
 
 .auth-form-group input {
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 2px solid rgba(226, 232, 240, 1);
-  background: rgba(247, 250, 252, 0.9);
-  font-size: 15px;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 2px solid rgba(226, 232, 240, 1);
+    background: rgba(247, 250, 252, 0.9);
+    font-size: 15px;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
 .auth-form-group input:focus {
-  outline: none;
-  border-color: #7fb3a0;
-  box-shadow: 0 0 0 3px rgba(168, 213, 186, 0.25);
+    outline: none;
+    border-color: #7fb3a0;
+    box-shadow: 0 0 0 3px rgba(168, 213, 186, 0.25);
 }
 
 .auth-error {
-  color: #e53e3e;
-  background: rgba(254, 215, 215, 0.6);
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 14px;
+    color: #e53e3e;
+    background: rgba(254, 215, 215, 0.6);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 14px;
 }
 
 .auth-submit {
-  padding: 12px 18px;
-  border: none;
-  border-radius: 30px;
-  background: linear-gradient(135deg, #7fb3a0 0%, #5d9d85 100%);
-  color: white;
-  font-weight: 700;
-  font-size: 15px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #7fb3a0 0%, #5d9d85 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .auth-submit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(93, 157, 133, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(93, 157, 133, 0.35);
 }
 
 .auth-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .auth-switch {
-  text-align: center;
-  font-size: 14px;
-  color: #4a5568;
+    text-align: center;
+    font-size: 14px;
+    color: #4a5568;
 }
 
 .auth-switch button {
-  background: none;
-  border: none;
-  color: #7fb3a0;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
+    background: none;
+    border: none;
+    color: #7fb3a0;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
 }
 
 .auth-switch button:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 @media (max-width: 768px) {
-  .auth-modal {
-    padding: 32px 24px;
-    width: min(380px, 92vw);
-    gap: 16px;
-  }
-  
-  .auth-modal-title {
-    font-size: 26px;
-  }
-  
-  .auth-modal-subtitle {
-    font-size: 14px;
-  }
-  
-  .auth-form-group input {
-    font-size: 16px;
-    padding: 14px 16px;
-  }
-  
-  .auth-submit {
-    padding: 14px 20px;
-    font-size: 16px;
-    width: 100%;
-  }
+    .auth-modal {
+        padding: 32px 24px;
+        width: min(380px, 92vw);
+        gap: 16px;
+    }
+    
+    .auth-modal-title {
+        font-size: 26px;
+    }
+    
+    .auth-modal-subtitle {
+        font-size: 14px;
+    }
+    
+    .auth-form-group input {
+        font-size: 16px;
+        padding: 14px 16px;
+    }
+    
+    .auth-submit {
+        padding: 14px 20px;
+        font-size: 16px;
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
-  .auth-modal {
-    padding: 28px 20px;
-    gap: 14px;
-    width: 90vw;
-  }
+    .auth-modal {
+        padding: 28px 20px;
+        gap: 14px;
+        width: 90vw;
+    }
 
-  .auth-modal-title {
-    font-size: 22px;
-  }
-  
-  .auth-modal-subtitle {
-    font-size: 13px;
-  }
-  
-  .auth-form {
-    gap: 14px;
-  }
-  
-  .auth-form-group label {
-    font-size: 13px;
-  }
-  
-  .auth-switch {
-    font-size: 13px;
-  }
+    .auth-modal-title {
+        font-size: 22px;
+    }
+    
+    .auth-modal-subtitle {
+        font-size: 13px;
+    }
+    
+    .auth-form {
+        gap: 14px;
+    }
+    
+    .auth-form-group label {
+        font-size: 13px;
+    }
+    
+    .auth-switch {
+        font-size: 13px;
+    }
 }
