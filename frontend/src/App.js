@@ -73,7 +73,6 @@ function App() {
             
             const items = await fbSpots.list();
 
-            // Client-side filters for simplicity
             let filtered = items;
             if (showFeaturedOnly || filter.is_featured) {
                 filtered = filtered.filter((s) => !!s.is_featured);
