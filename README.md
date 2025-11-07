@@ -113,27 +113,99 @@ The backend API will be available at `http://localhost:8000`
    npm start
    ```
 
-The frontend will be available at `http://localhost:3000`
+   The React app will automatically open in your browser at `http://localhost:3000`
+
+   If it doesn't open automatically, navigate to `http://localhost:3000` in your browser.
+
+   > **Tip:** If your backend runs on a different domain or port, create `frontend/.env` with `REACT_APP_API_URL=https://your-backend-domain/api`.
+
+### Firebase Authentication (Frontend)
+
+To use Firebase for login/registration:
+
+1. Create a Firebase project at https://console.firebase.google.com
+2. Enable Authentication → Sign-in method → Email/Password
+3. Create a Firestore database (Production mode is fine)
+4. Copy your Web App config from Project settings → General → Your Apps
+5. Create `frontend/.env` and add:
+   ```
+   REACT_APP_FIREBASE_API_KEY=YOUR_API_KEY
+   REACT_APP_FIREBASE_AUTH_DOMAIN=YOUR_PROJECT.firebaseapp.com
+   REACT_APP_FIREBASE_PROJECT_ID=YOUR_PROJECT_ID
+   REACT_APP_FIREBASE_APP_ID=YOUR_APP_ID
+   # optional
+   REACT_APP_FIREBASE_MESSAGING_SENDER_ID=YOUR_SENDER_ID
+   REACT_APP_FIREBASE_STORAGE_BUCKET=YOUR_PROJECT.appspot.com
+   ```
+6. Restart the React dev server (`npm start`) to pick up env vars
+
+The app will now use Firebase Authentication for login/registration and Firestore for the experiences feed.
+
+### Firestore for Matcha Spots
+
+If you want to host `MatchaSpot` data in Firebase instead of Django:
+
+1. In Firebase Console, open Firestore and create a collection named `spots`.
+2. Each document should include fields:
+   - `name` (string), `address` (string), `city` (string), `state` (string), `zip_code` (string)
+   - `latitude` (number), `longitude` (number)
+   - `rating` (number), `review_count` (number)
+   - `description` (string), `phone` (string), `website` (string), `hours` (string)
+   - `price_range` (string: `$`, `$$`, `$$$`, `$$$$`)
+   - `is_featured` (boolean)
+   - `imageUrl` (string, optional; host in Firebase Storage or external URL)
+3. Security rules (starter):
+   ```
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /experiences/{id} { allow read: if true; allow write: if request.auth != null; }
+       match /spots/{id} {
+         allow read: if true;
+         // lock down writes to admins or your own UID
+         allow write: if false;
+       }
+     }
+   }
+   ```
+4. Restart the frontend after setting Firebase env vars. The app will read spots from Firestore and continue to use Firestore for the feed.
 
 ## API Endpoints
 
-### Base URL: `http://localhost:8000/api/spots/`
+### Base URL: `http://localhost:8000/api/`
 
-- `GET /api/spots/` - List all matcha spots
-- `GET /api/spots/{id}/` - Get a specific matcha spot
-- `POST /api/spots/` - Create a new matcha spot
-- `PUT /api/spots/{id}/` - Update a matcha spot
-- `DELETE /api/spots/{id}/` - Delete a matcha spot
-- `GET /api/spots/featured/` - Get featured matcha spots
-- `GET /api/spots/top_rated/` - Get top-rated matcha spots (rating >= 4.0)
+### Authentication
+- `POST /auth/register/` – Create a new user account (returns token)
+- `POST /auth/login/` – Obtain token for existing user
+- `GET /auth/user/` – Retrieve current user profile (requires `Authorization: Token <token>` header)
 
-### Query Parameters
+### Matcha Spots
+- `GET /spots/` – List all matcha spots
+- `GET /spots/{id}/` – Get a specific matcha spot
+- `POST /spots/` – Create a new matcha spot
+- `PUT /spots/{id}/` – Update a matcha spot
+- `DELETE /spots/{id}/` – Delete a matcha spot
+- `GET /spots/featured/` – Get featured matcha spots
+- `GET /spots/top_rated/` – Get top-rated matcha spots (rating >= 4.0)
 
-- `city`: Filter by city
-- `price_range`: Filter by price range ($, $$, $$$, $$$$)
-- `is_featured`: Filter featured spots (true/false)
-- `search`: Search in name, address, and description
-- `ordering`: Order by field (e.g., `-rating`, `name`)
+Query parameters: `city`, `price_range`, `is_featured`, `search`, `ordering`
+
+### Matcha Experiences Feed
+- `GET /experiences/` – List all shared experiences (public)
+- `POST /experiences/` – Share a new experience (requires auth)
+- `GET /experiences/{id}/` – Retrieve a single experience
+- `PUT /experiences/{id}/` – Update your experience
+- `DELETE /experiences/{id}/` – Delete your experience
+
+Request payload for `POST /experiences/`:
+```json
+{
+  "title": "Sunset Matcha Session",
+  "content": "Loved the cozy atmosphere and smooth matcha latte.",
+  "rating": 5,            // optional, integer 1-5
+  "spot": 3               // optional MatchaSpot ID, or null
+}
+```
 
 ## Adding Matcha Spots
 

@@ -64,10 +64,17 @@ const MapController = ({ center, zoom }) => {
   return null;
 };
 
-const MapView = ({ spots, onMarkerClick, selectedSpot }) => {
+const MapView = ({ spots, onMarkerClick, selectedSpot, onUserLocationChange }) => {
   const mapRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
   const [locationError, setLocationError] = useState(null);
+  
+  const updateUserLocation = (coords) => {
+    setUserLocation(coords);
+    if (typeof onUserLocationChange === 'function') {
+      onUserLocationChange(coords);
+    }
+  };
   
   // Default center for Irvine, CA
   const defaultCenter = [33.6846, -117.8265];
@@ -78,7 +85,7 @@ const MapView = ({ spots, onMarkerClick, selectedSpot }) => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setUserLocation([latitude, longitude]);
+          updateUserLocation([latitude, longitude]);
           setLocationError(null);
           // Center map on user location
           if (mapRef.current) {
@@ -91,7 +98,7 @@ const MapView = ({ spots, onMarkerClick, selectedSpot }) => {
         (error) => {
           console.error('Geolocation error:', error);
           setLocationError(error.message);
-          setUserLocation(null);
+          updateUserLocation(null);
         },
         {
           enableHighAccuracy: true,
@@ -179,9 +186,6 @@ const MapView = ({ spots, onMarkerClick, selectedSpot }) => {
               >
                 <Popup>
                   <div className="map-popup">
-                    {spot.image_url && (
-                      <img src={spot.image_url} alt={spot.name} className="popup-image" />
-                    )}
                     <h3>{spot.name}</h3>
                     {spot.rating && (
                       <p className="popup-rating">⭐ {parseFloat(spot.rating).toFixed(1)}</p>

@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './App.css';
 import LandingPage from './components/LandingPage';
 import MapView from './components/MapView';
 import Sidebar from './components/Sidebar';
-import { matchaSpotAPI } from './services/api';
+import FeedPanel from './components/FeedPanel';
+import AuthModal from './components/AuthModal';
+import { fbAuth } from './services/authFirebase';
+import { fbExperiences } from './services/experiencesFirebase';
+import { fbSpots } from './services/spotsFirebase';
 
 function App() {
   const [showLanding, setShowLanding] = useState(true);
@@ -11,6 +15,14 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showFeed, setShowFeed] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState('');
+  const [experiences, setExperiences] = useState([]);
+  const [experiencesLoading, setExperiencesLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState({
     city: '',
@@ -24,8 +36,7 @@ function App() {
 
   useEffect(() => {
     fetchSpots();
-    
-    // Handle scroll to hide landing page
+
     const handleScroll = () => {
       if (window.scrollY > 100 && showLanding) {
         handleEnter();
@@ -36,24 +47,46 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [showLanding]);
 
+  useEffect(() => {
+    fetchSpots();
+  }, [filter, showFeaturedOnly]);
+
+  // Firebase auth state subscription
+  useEffect(() => {
+    const unsub = fbAuth.onChange((user) => {
+      if (user) {
+        setCurrentUser({
+          uid: user.uid,
+          username: user.displayName || user.email?.split('@')[0] || 'user',
+          email: user.email,
+        });
+      } else {
+        setCurrentUser(null);
+      }
+    });
+    return () => unsub();
+  }, []);
+
   const fetchSpots = async () => {
     try {
       setLoading(true);
       setError(null);
-      
-      let response;
-      if (showFeaturedOnly) {
-        response = await matchaSpotAPI.getFeatured();
-        setSpots(response.data);
-      } else {
-        const params = {};
-        if (filter.city) params.city = filter.city;
-        if (filter.price_range) params.price_range = filter.price_range;
-        if (filter.is_featured) params.is_featured = filter.is_featured;
-        
-        response = await matchaSpotAPI.getAll(params);
-        setSpots(response.data.results || response.data);
+
+      const items = await fbSpots.list();
+
+      // Client-side filters for simplicity
+      let filtered = items;
+      if (showFeaturedOnly || filter.is_featured) {
+        filtered = filtered.filter((s) => !!s.is_featured);
       }
+      if (filter.city) {
+        filtered = filtered.filter((s) => s.city === filter.city);
+      }
+      if (filter.price_range) {
+        filtered = filtered.filter((s) => s.price_range === filter.price_range);
+      }
+
+      setSpots(filtered);
     } catch (err) {
       console.error('Error fetching spots:', err);
       setError('Failed to load matcha spots. Please try again later.');
@@ -62,13 +95,21 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    fetchSpots();
-  }, [filter, showFeaturedOnly]);
+  const fetchExperiences = useCallback(async () => {
+    try {
+      setExperiencesLoading(true);
+      const items = await fbExperiences.list();
+      setExperiences(items);
+    } catch (err) {
+      console.error('Unable to load experiences', err);
+      setExperiences([]);
+    } finally {
+      setExperiencesLoading(false);
+    }
+  }, []);
 
   const handleEnter = () => {
     setShowLanding(false);
-    // Prevent scrolling on map page
     document.body.classList.add('map-active');
     document.documentElement.style.overflow = 'hidden';
   };
@@ -76,7 +117,6 @@ function App() {
   const handleMarkerClick = (spot) => {
     setSelectedSpot(spot);
     setSidebarOpen(true);
-    // Scroll to the spot in sidebar
     setTimeout(() => {
       const element = document.getElementById(`spot-${spot.id}`);
       if (element) {
@@ -87,10 +127,9 @@ function App() {
 
   const handleSpotClick = (spot) => {
     setSelectedSpot(spot);
-    // You could also center the map on this spot
   };
 
-  const filteredSpots = spots.filter(spot => {
+  const filteredSpots = spots.filter((spot) => {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -100,28 +139,86 @@ function App() {
     );
   });
 
+  const handleAuthSubmit = async (form, resetForm) => {
+    setAuthLoading(true);
+    setAuthError('');
+    try {
+      if (authMode === 'login') {
+        await fbAuth.login({ email: form.email || form.username, password: form.password });
+      } else {
+        // Registration requires an email for Firebase; use username as displayName
+        const email = form.email || `${form.username}@example.com`;
+        await fbAuth.register({ email, password: form.password, username: form.username });
+      }
+      resetForm();
+      setAuthModalOpen(false);
+    } catch (err) {
+      const message = err?.message || 'Unable to complete request.';
+      setAuthError(message);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleRequireAuth = (mode = 'login') => {
+    setAuthMode(mode);
+    setAuthError('');
+    setAuthModalOpen(true);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fbAuth.logout();
+      setCurrentUser(null);
+    } catch (err) {
+      console.error('Logout failed', err);
+    }
+  };
+
+  const handleCreateExperience = async (payload) => {
+    if (!currentUser) throw new Error('Please log in first.');
+    try {
+      await fbExperiences.create({ user: currentUser, ...payload });
+      fetchExperiences();
+    } catch (err) {
+      const detail = err?.message || 'Unable to post experience right now.';
+      throw new Error(detail);
+    }
+  };
+
+  const openFeed = () => {
+    setShowFeed(true);
+    fetchExperiences();
+  };
+
   return (
     <div className="App" ref={appRef}>
-      {showLanding && (
-        <LandingPage onEnter={handleEnter} />
-      )}
+      {showLanding && <LandingPage onEnter={handleEnter} />}
 
       <div className={`main-content ${showLanding ? 'hidden' : ''}`}>
-        <MapView 
-          spots={filteredSpots} 
+        <MapView
+          spots={filteredSpots}
           onMarkerClick={handleMarkerClick}
           selectedSpot={selectedSpot}
           onUserLocationChange={setUserLocation}
         />
-        
-        {/* Floating button to open sidebar */}
-        <button 
+
+        <button
           className="sidebar-toggle-btn"
           onClick={() => setSidebarOpen(true)}
           title="Open spots list"
         >
           <span className="toggle-icon">🍵</span>
           <span className="toggle-text">Spots</span>
+        </button>
+
+        <button
+          className="feed-toggle-btn"
+          onClick={openFeed}
+          title="Open matcha feed"
+        >
+          <span className="toggle-icon">📝</span>
+          <span className="toggle-text">Feed</span>
         </button>
 
         <Sidebar
@@ -143,6 +240,19 @@ function App() {
           loading={loading}
           userLocation={userLocation}
         />
+
+        <FeedPanel
+          isOpen={showFeed}
+          onClose={() => setShowFeed(false)}
+          experiences={experiences}
+          loading={experiencesLoading}
+          onRefresh={fetchExperiences}
+          onCreate={handleCreateExperience}
+          user={currentUser}
+          spots={spots}
+          onRequireAuth={() => handleRequireAuth('login')}
+          onLogout={handleLogout}
+        />
       </div>
 
       {loading && !showLanding && (
@@ -160,6 +270,19 @@ function App() {
           </button>
         </div>
       )}
+
+      <AuthModal
+        isOpen={authModalOpen}
+        mode={authMode}
+        onClose={() => setAuthModalOpen(false)}
+        onSwitchMode={(mode) => {
+          setAuthMode(mode);
+          setAuthError('');
+        }}
+        onSubmit={handleAuthSubmit}
+        loading={authLoading}
+        error={authError}
+      />
     </div>
   );
 }

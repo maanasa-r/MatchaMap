@@ -1,0 +1,351 @@
+.feed-panel {
+  position: fixed;
+  top: 0;
+  right: -480px;
+  width: 420px;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(18px);
+  box-shadow: -12px 0 30px rgba(15, 23, 42, 0.25);
+  z-index: 1050;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-left: 1px solid rgba(168, 213, 186, 0.2);
+  overflow: hidden;
+}
+
+.feed-panel.open {
+  right: 0;
+}
+
+.feed-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px;
+  background: linear-gradient(135deg, rgba(168, 213, 186, 0.2) 0%, rgba(127, 179, 160, 0.25) 100%);
+  border-bottom: 1px solid rgba(168, 213, 186, 0.25);
+}
+
+.feed-panel-header h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  color: #2d3748;
+}
+
+.feed-panel-header p {
+  margin: 4px 0 0;
+  color: #4a5568;
+  font-size: 14px;
+}
+
+.feed-close-btn {
+  background: rgba(93, 157, 133, 0.15);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.feed-close-btn:hover {
+  transform: rotate(90deg);
+  background: rgba(93, 157, 133, 0.25);
+}
+
+.feed-panel-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.feed-create, .feed-list {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.feed-create h3, .feed-list h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: #2d3748;
+  font-weight: 700;
+}
+
+.feed-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.feed-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.feed-form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.feed-form-group input,
+.feed-form-group select,
+.feed-form-group textarea {
+  border-radius: 12px;
+  border: 2px solid rgba(226, 232, 240, 1);
+  background: rgba(247, 250, 252, 0.95);
+  padding: 10px 12px;
+  font-size: 14px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feed-form-group textarea {
+  resize: vertical;
+}
+
+.feed-form-group input:focus,
+.feed-form-group select:focus,
+.feed-form-group textarea:focus {
+  outline: none;
+  border-color: #7fb3a0;
+  box-shadow: 0 0 0 3px rgba(168, 213, 186, 0.2);
+}
+
+.feed-form-error {
+  color: #e53e3e;
+  background: rgba(254, 215, 215, 0.6);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.feed-submit-btn {
+  align-self: flex-start;
+  padding: 10px 22px;
+  border-radius: 24px;
+  border: none;
+  background: linear-gradient(135deg, #7fb3a0 0%, #5d9d85 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feed-submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(93, 157, 133, 0.3);
+}
+
+.feed-login-prompt {
+  background: rgba(247, 250, 252, 0.9);
+  border: 2px dashed rgba(127, 179, 160, 0.4);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+  color: #4a5568;
+}
+
+.feed-login-prompt button {
+  align-self: center;
+  padding: 10px 20px;
+  border-radius: 24px;
+  border: none;
+  background: linear-gradient(135deg, #a8d5ba 0%, #7fb3a0 100%);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.feed-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.feed-refresh-btn {
+  border: none;
+  background: rgba(127, 179, 160, 0.15);
+  padding: 8px 14px;
+  border-radius: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2d3748;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.feed-refresh-btn:hover:not(:disabled) {
+  background: rgba(127, 179, 160, 0.25);
+}
+
+.feed-loading,
+.feed-empty {
+  text-align: center;
+  padding: 40px 10px;
+  color: #4a5568;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feed-empty span {
+  font-size: 28px;
+}
+
+.feed-items {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.feed-item {
+  background: rgba(247, 250, 252, 0.9);
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feed-item header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.feed-item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.feed-item-user {
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.feed-item-date {
+  font-size: 12px;
+  color: #718096;
+}
+
+.feed-item-rating {
+  background: rgba(127, 179, 160, 0.2);
+  color: #2d3748;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.feed-item h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #2d3748;
+}
+
+.feed-item-spot {
+  margin: 0;
+  font-size: 13px;
+  color: #5d9d85;
+  font-weight: 600;
+}
+
+.feed-item-content {
+  margin: 0;
+  color: #4a5568;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.feed-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.feed-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  padding: 6px 12px 6px 6px;
+  border: 1px solid rgba(168, 213, 186, 0.4);
+}
+
+.feed-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a8d5ba 0%, #7fb3a0 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.feed-user-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  font-size: 12px;
+  color: #2d3748;
+}
+
+.feed-user-meta span {
+  font-weight: 600;
+}
+
+.feed-logout-btn {
+  border: none;
+  background: none;
+  color: #7fb3a0;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.feed-logout-btn:hover {
+  text-decoration: underline;
+}
+
+.feed-login-btn {
+  border: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(127, 179, 160, 0.2);
+  color: #1a202c;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.feed-login-btn:hover {
+  background: rgba(127, 179, 160, 0.3);
+}
+
+@media (max-width: 768px) {
+  .feed-panel {
+    width: 100vw;
+    right: -100vw;
+  }
+}
