@@ -219,12 +219,12 @@ function App() {
         </button>
 
         <button
-          className="feed-toggle-btn"
-          onClick={openFeed}
-          title="Open matcha feed"
+          className="share-experience-btn"
+          onClick={openFeed} // keep your existing handler
+          title="Share your matcha experience"
+          aria-label="Share your matcha experience"
         >
-          <span className="toggle-icon">📝</span>
-          <span className="toggle-text">Feed</span>
+          Share Your Sip
         </button>
 
         <Sidebar

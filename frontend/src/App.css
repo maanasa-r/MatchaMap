@@ -328,3 +328,38 @@ body.map-active {
     height: 52px;
   }
 }
+
+/* Bottom-center Share Experience Button */
+.share-experience-btn {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  z-index: 1000;
+
+  background-color: #72b788; /* matcha green tone */
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 9999px;
+  padding: 14px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+}
+
+.share-experience-btn:hover {
+  background-color: #5fa673;
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .share-experience-btn {
+    bottom: 20px;
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}
