@@ -7,7 +7,6 @@ const LandingPage = ({ onEnter }) => {
   const [particles, setParticles] = useState([]);
 
   useEffect(() => {
-    // Create floating particles
     const particleCount = 20;
     const newParticles = Array.from({ length: particleCount }, (_, i) => ({
       id: i,

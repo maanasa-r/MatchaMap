@@ -4,7 +4,6 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './MapView.css';
 
-// Fix for default markers in Leaflet with React
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
@@ -16,9 +15,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: iconShadow,
 });
 
-// Custom matcha icon
 const createMatchaIcon = (isFeatured, imageUrl) => {
-  // If an image URL is provided, render the image inside the marker. Otherwise fall back to emoji.
   const imgHtml = imageUrl
     ? `<img src="${imageUrl}" class="marker-thumb" alt="spot"/>`
     : '🍵';
@@ -37,7 +34,6 @@ const createMatchaIcon = (isFeatured, imageUrl) => {
   });
 };
 
-// Custom user location icon
 const createUserLocationIcon = () => {
   return L.divIcon({
     className: 'user-location-marker',
@@ -53,7 +49,6 @@ const createUserLocationIcon = () => {
   });
 };
 
-// Component to handle map centering
 const MapController = ({ center, zoom }) => {
   const map = useMap();
   
@@ -75,7 +70,6 @@ const MapView = ({ spots, onMarkerClick, selectedSpot, onUserLocationChange }) =
     }
   };
   
-  // Default center for Irvine, CA
   const defaultCenter = [33.6846, -117.8265];
   const defaultZoom = 13;
 
@@ -86,7 +80,6 @@ const MapView = ({ spots, onMarkerClick, selectedSpot, onUserLocationChange }) =
           const { latitude, longitude } = position.coords;
           updateUserLocation([latitude, longitude]);
           setLocationError(null);
-          // Center map on user location
           if (mapRef.current) {
             mapRef.current.setView([latitude, longitude], 15, {
               animate: true,
@@ -110,12 +103,10 @@ const MapView = ({ spots, onMarkerClick, selectedSpot, onUserLocationChange }) =
     }
   };
 
-  // Get user's current location on mount
   useEffect(() => {
     getCurrentLocation();
   }, []);
 
-  // Center map on selected spot
   useEffect(() => {
     if (selectedSpot && selectedSpot.latitude && selectedSpot.longitude && mapRef.current) {
       const position = [parseFloat(selectedSpot.latitude), parseFloat(selectedSpot.longitude)];

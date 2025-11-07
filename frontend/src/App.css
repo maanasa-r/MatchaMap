@@ -47,7 +47,6 @@ body.map-active {
   pointer-events: none;
 }
 
-/* Sidebar toggle button */
 .sidebar-toggle-btn {
   position: fixed !important;
   bottom: 45px;
@@ -70,7 +69,6 @@ body.map-active {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   backdrop-filter: blur(10px);
-  /* Better touch targets */
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
@@ -94,7 +92,6 @@ body.map-active {
   box-shadow: 0 6px 20px rgba(15, 23, 42, 0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   backdrop-filter: blur(8px);
-  /* Better touch targets */
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
@@ -116,8 +113,8 @@ body.map-active {
 
 .sidebar-toggle-btn::before {
   position: fixed !important;
-  bottom: 80px; /* moved inward to avoid border overlap */
-  right: 60px; /* moved inward to avoid border overlap */
+  bottom: 80px;
+  right: 60px;
   z-index: 9998 !important;
   background: linear-gradient(135deg, #a8d5ba 0%, #7fb3a0 50%, #5d9d85 100%);
   background-size: 200% 200%;
@@ -155,7 +152,7 @@ body.map-active {
 }
 
 .toggle-text {
-  display: none; /* no text when image-only button */
+  display: none;
 }
 
 .sidebar-logo {
@@ -164,7 +161,6 @@ body.map-active {
   object-fit: contain;
 }
 
-/* Loading and error overlays */
 .loading-overlay,
 .error-overlay {
   position: fixed;
@@ -233,7 +229,6 @@ body.map-active {
   background: #f56565;
 }
 
-/* Mobile Responsive Styles */
 @media (max-width: 768px) {
   .sidebar-toggle-btn {
     bottom: 20px;
@@ -329,7 +324,6 @@ body.map-active {
   }
 }
 
-/* Bottom-center Share Experience Button */
 .share-experience-btn {
   position: fixed;
   left: 50%;
@@ -337,7 +331,7 @@ body.map-active {
   transform: translateX(-50%);
   z-index: 1000;
 
-  background-color: #72b788; /* matcha green tone */
+  background-color: #72b788;
   color: white;
   font-weight: 600;
   border: none;
@@ -355,7 +349,6 @@ body.map-active {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
 }
 
-/* Mobile adjustments */
 @media (max-width: 768px) {
   .share-experience-btn {
     bottom: 20px;

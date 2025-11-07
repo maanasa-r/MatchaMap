@@ -2,7 +2,6 @@ import React from 'react';
 import './MatchaSpotCard.css';
 
 const MatchaSpotCard = ({ spot, userLocation }) => {
-  // Convert rating to number if it's a string
   const rating = spot.rating ? parseFloat(spot.rating) : null;
   
   const renderStars = (rating) => {
@@ -28,7 +27,6 @@ const MatchaSpotCard = ({ spot, userLocation }) => {
     return <div className="stars">{stars}</div>;
   };
 
-  // Calculate distance from user location
   const calculateDistance = () => {
     if (!userLocation || !spot.latitude || !spot.longitude) return null;
     
@@ -36,9 +34,8 @@ const MatchaSpotCard = ({ spot, userLocation }) => {
     const spotLat = parseFloat(spot.latitude);
     const spotLng = parseFloat(spot.longitude);
     
-    // Haversine formula
     const toRad = (value) => (value * Math.PI) / 180;
-    const R = 3959; // Earth's radius in miles
+    const R = 3959;
     
     const dLat = toRad(spotLat - userLat);
     const dLng = toRad(spotLng - userLng);

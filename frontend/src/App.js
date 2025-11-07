@@ -51,7 +51,6 @@ function App() {
     fetchSpots();
   }, [filter, showFeaturedOnly]);
 
-  // Firebase auth state subscription
   useEffect(() => {
     const unsub = fbAuth.onChange((user) => {
       if (user) {
@@ -149,7 +148,6 @@ function App() {
       if (authMode === 'login') {
         await fbAuth.login({ email: form.email || form.username, password: form.password });
       } else {
-        // Registration requires an email for Firebase; use username as displayName
         const email = form.email || `${form.username}@example.com`;
         await fbAuth.register({ email, password: form.password, username: form.username });
       }
@@ -185,7 +183,6 @@ function App() {
       fetchExperiences();
     } catch (err) {
       let detail = err?.message || 'Unable to post experience right now.';
-      // Check for Firestore permission errors
       if (detail.includes('permission') || detail.includes('PERMISSION_DENIED')) {
         detail = 'Permission denied. Make sure Firestore security rules allow authenticated users to create experiences. See README for setup instructions.';
       }
@@ -220,7 +217,7 @@ function App() {
 
         <button
           className="share-experience-btn"
-          onClick={openFeed} // keep your existing handler
+          onClick={openFeed}
           title="Share your matcha experience"
           aria-label="Share your matcha experience"
         >

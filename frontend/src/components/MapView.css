@@ -5,16 +5,15 @@
   top: 0;
   left: 0;
   z-index: 1;
-  box-sizing: border-box; /* include border in sizing */
-  overflow: hidden; /* keep the map inside the border */
-  /* Make the border a real visible border so the map sits inside */
+  box-sizing: border-box;
+  overflow: hidden;
   border-style: solid;
   border-color: #80c28d;
-  border-width: 48px 24px 24px 24px; /* thicker top, thicker sides */
+  border-width: 48px 24px 24px 24px;
   border-radius: 40px;
   outline: 50px solid #80c28d;
   outline-offset: 0;
-  padding: 12px; /* spacing between border and map content */
+  padding: 12px;
 }
 
 .map-container .leaflet-container {
@@ -26,13 +25,11 @@
   z-index: 1;
 }
 
-/* Ensure Leaflet controls are properly positioned */
 .map-container .leaflet-top,
 .map-container .leaflet-bottom {
   z-index: 1000;
 }
 
-/* My Location Button */
 .my-location-btn {
   position: fixed !important;
   bottom: 120px;
@@ -91,7 +88,6 @@
   font-size: 24px;
 }
 
-/* Custom marker styles */
 .matcha-marker {
   background: transparent !important;
   border: none !important;
@@ -154,7 +150,6 @@
   overflow: hidden;
 }
 
-/* Thumbnail image inside marker */
 .marker-thumb {
   width: 100%;
   height: 100%;
@@ -190,7 +185,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* Popup styles */
 .map-popup {
   min-width: 200px;
   text-align: center;
@@ -203,7 +197,6 @@
   font-weight: 700;
 }
 
-/* Popup image */
 .popup-image {
   width: 100%;
   max-height: 140px;
@@ -232,7 +225,6 @@
   font-weight: 600;
 }
 
-/* User location marker styles */
 .user-location-marker {
   background: transparent !important;
   border: none !important;
@@ -283,7 +275,6 @@
   }
 }
 
-/* Leaflet popup customization */
 .leaflet-popup-content-wrapper {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -293,21 +284,19 @@
   background: white;
 }
 
-/* Overlay border to ensure visibility above Leaflet's fixed children */
 .map-border-overlay { display: none; }
 
-/* Brand/logo in the top-left corner */
 .map-brand {
   position: fixed;
   top: 0;
-  left: 24px; /* align with left border thickness */
-  height: 48px; /* match top border thickness */
+  left: 24px;
+  height: 48px;
   z-index: 2147483648;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 0 12px;
-  background: #80c28d; /* same as border so it appears 'in' the border */
+  background: #80c28d;
   border-radius: 0 8px 8px 0;
   text-decoration: none;
   color: #ffffff;
@@ -330,19 +319,16 @@
   color: #ffffff;
 }
 
-/* Move Leaflet zoom controls inward so they are not covered by the border */
 .map-container .leaflet-control-zoom {
   top: 5px !important;
   left: 5px !important;
 }
 
-/* Slightly increase spacing for bottom-right floating buttons */
 .map-container .my-location-btn {
   bottom: 140px !important;
   right: 60px !important;
 }
 
-/* Mobile Responsive Styles */
 @media (max-width: 768px) {
   .map-container {
     border-width: 0;

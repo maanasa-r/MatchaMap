@@ -37,7 +37,6 @@
   pointer-events: none;
 }
 
-/* Animated background orbs */
 .landing-background {
   position: absolute;
   top: 0;
@@ -96,7 +95,6 @@
   }
 }
 
-/* Floating particles */
 .particles-container {
   position: absolute;
   top: 0;
